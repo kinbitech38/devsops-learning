@@ -1,9 +1,27 @@
 #!/usr/bin/env
-echo "Login to docker hub"
+set -e
+set -x
+
+echo " Logging in to Docker Hub..."
 docker login
 
-echo "Build the mysql"
-docker build -t kinbi/mysql:1.0 .
+echo "Verify my Image"
+docker ls
 
-echo "push the image"
-docker push kinbi/mysql-app:1.0
+echo " Building the MySQL image..."
+docker build -t kinbi/mysql-app:1.0 .
+
+echo " Tagging the image (latest)..."
+docker tag mysql-app:1.0 mysql-app:latest
+
+echo "Verify my Image"
+docker ls
+
+echo " Running the container..."
+docker run -d --name mysql-app-test --network app-network -p 3306:3306 mysql-app
+
+echo " Pushing images to Docker Hub..."
+docker push kinbi/mysql-app:latest
+
+echo " All done! Build, tag, run, and push completed 
+
